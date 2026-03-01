@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, uniqueIndex, primaryKey } from "drizzle-orm/sqlite-core";
 
 // === Auth (NextAuth) ===
 export const users = sqliteTable("users", {
@@ -10,7 +10,6 @@ export const users = sqliteTable("users", {
 });
 
 export const accounts = sqliteTable("accounts", {
-  id: text("id").primaryKey(),
   userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
   type: text("type").notNull(),
   provider: text("provider").notNull(),
@@ -22,7 +21,9 @@ export const accounts = sqliteTable("accounts", {
   scope: text("scope"),
   id_token: text("id_token"),
   session_state: text("session_state"),
-});
+}, (table) => [
+  primaryKey({ columns: [table.provider, table.providerAccountId] }),
+]);
 
 export const sessions = sqliteTable("sessions", {
   sessionToken: text("sessionToken").primaryKey(),
