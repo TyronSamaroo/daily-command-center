@@ -28,9 +28,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(blocks);
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("GET /api/work-blocks error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("GET /api/work-blocks error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
