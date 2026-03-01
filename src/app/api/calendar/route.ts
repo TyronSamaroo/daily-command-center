@@ -1,15 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getUserId } from "@/lib/auth-helpers";
 import { getGoogleCalendarEvents } from "@/lib/google-calendar";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const userId = await getUserId();
     if (!userId) {
       return NextResponse.json([], { status: 200 });
     }
 
-    const events = await getGoogleCalendarEvents(userId);
+    const timeMin = req.nextUrl.searchParams.get("timeMin") ?? undefined;
+    const timeMax = req.nextUrl.searchParams.get("timeMax") ?? undefined;
+
+    const events = await getGoogleCalendarEvents(userId, timeMin, timeMax);
     return NextResponse.json(events);
   } catch (err) {
     console.error("GET /api/calendar error:", err);

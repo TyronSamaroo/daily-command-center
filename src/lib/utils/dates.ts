@@ -51,3 +51,14 @@ export function formatDateShort(dateKey: string): string {
     day: "numeric",
   });
 }
+
+/** Format YYYY-MM-DD as "Saturday, February 28, 2026" */
+export function formatDateLong(dateKey: string): string {
+  const date = new Date(dateKey + "T12:00:00");
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}

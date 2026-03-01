@@ -4,7 +4,11 @@ import { accounts } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import type { CalendarEvent } from "@/types";
 
-export async function getGoogleCalendarEvents(userId: string): Promise<CalendarEvent[]> {
+export async function getGoogleCalendarEvents(
+  userId: string,
+  timeMin?: string,
+  timeMax?: string
+): Promise<CalendarEvent[]> {
   // 1. Fetch tokens from accounts table
   const [account] = await db
     .select({
@@ -48,21 +52,23 @@ export async function getGoogleCalendarEvents(userId: string): Promise<CalendarE
       .where(and(eq(accounts.userId, userId), eq(accounts.provider, "google")));
   }
 
-  // 4. Fetch today's events
+  // 4. Fetch events for the requested range (defaults to today)
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
+  const rangeStart = timeMin
+    ? new Date(timeMin)
+    : (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  const rangeEnd = timeMax
+    ? new Date(timeMax)
+    : (() => { const d = new Date(); d.setHours(23, 59, 59, 999); return d; })();
 
   const response = await calendar.events.list({
     calendarId: "primary",
-    timeMin: todayStart.toISOString(),
-    timeMax: todayEnd.toISOString(),
+    timeMin: rangeStart.toISOString(),
+    timeMax: rangeEnd.toISOString(),
     singleEvents: true,
     orderBy: "startTime",
-    maxResults: 20,
+    maxResults: 250,
   });
 
   // 5. Map to CalendarEvent type
