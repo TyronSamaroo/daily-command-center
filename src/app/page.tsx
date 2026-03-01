@@ -103,13 +103,15 @@ export default function DashboardPage() {
           value={0}
           icon={<Timer className="w-4 h-4" />}
         />
-        <StatCard
-          label="Calendar"
-          value={session?.user ? calendarEvents.length : "—"}
-          unit={session?.user ? "events" : ""}
-          icon={<Calendar className="w-4 h-4" />}
-          subtext={nextEvent ? `Next: ${nextEvent.summary}` : (session?.user ? "No events today" : "Sign in to connect")}
-        />
+        <Link href="/calendar">
+          <StatCard
+            label="Calendar"
+            value={session?.user ? calendarEvents.length : "—"}
+            unit={session?.user ? "events" : ""}
+            icon={<Calendar className="w-4 h-4" />}
+            subtext={nextEvent ? `Next: ${nextEvent.summary}` : (session?.user ? "No events today" : "Sign in to connect")}
+          />
+        </Link>
         <StatCard
           label="Week Progress"
           value="—"

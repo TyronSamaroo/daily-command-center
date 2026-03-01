@@ -122,6 +122,7 @@ export interface CalendarEvent {
   end: string;
   location?: string;
   htmlLink?: string;
+  description?: string;
 }
 
 // === Navigation ===

@@ -73,5 +73,6 @@ export async function getGoogleCalendarEvents(userId: string): Promise<CalendarE
     end: event.end?.dateTime || event.end?.date || "",
     location: event.location || undefined,
     htmlLink: event.htmlLink || undefined,
+    description: event.description || undefined,
   }));
 }

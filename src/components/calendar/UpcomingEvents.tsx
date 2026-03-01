@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import useSWR from "swr";
 import { Card } from "@/components/ui/Card";
-import { Calendar, ExternalLink, MapPin, Clock } from "lucide-react";
+import { Calendar, ExternalLink, MapPin, Clock, ArrowRight } from "lucide-react";
 import type { CalendarEvent } from "@/types";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -57,7 +58,13 @@ export function UpcomingEvents() {
       <div className="px-5 py-3 border-b border-border flex items-center gap-2">
         <Calendar className="w-4 h-4 text-accent" />
         <h3 className="text-sm font-medium">Today&apos;s Events</h3>
-        <span className="text-xs text-muted ml-auto">{events.length} total</span>
+        <Link
+          href="/calendar"
+          className="flex items-center gap-1 text-xs text-muted hover:text-accent transition-colors ml-auto"
+        >
+          View all ({events.length})
+          <ArrowRight className="w-3 h-3" />
+        </Link>
       </div>
       <div className="divide-y divide-border">
         {displayEvents.slice(0, 5).map((event) => (

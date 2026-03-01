@@ -35,21 +35,25 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
+  const values = {
+    weight: body.weight ?? null,
+    nightWeight: body.nightWeight ?? null,
+    steps: body.steps ?? null,
+    calories: body.calories ?? null,
+    activeEnergy: body.activeEnergy ?? null,
+    protein: body.protein ?? null,
+    fat: body.fat ?? null,
+    carbs: body.carbs ?? null,
+    workout: body.workout ?? null,
+    cardio: body.cardio ?? null,
+  };
+
   const [entry] = await db
     .insert(prepEntries)
-    .values({
-      userId,
-      date: body.date,
-      weight: body.weight ?? null,
-      nightWeight: body.nightWeight ?? null,
-      steps: body.steps ?? null,
-      calories: body.calories ?? null,
-      activeEnergy: body.activeEnergy ?? null,
-      protein: body.protein ?? null,
-      fat: body.fat ?? null,
-      carbs: body.carbs ?? null,
-      workout: body.workout ?? null,
-      cardio: body.cardio ?? null,
+    .values({ userId, date: body.date, ...values })
+    .onConflictDoUpdate({
+      target: [prepEntries.userId, prepEntries.date],
+      set: values,
     })
     .returning();
 
