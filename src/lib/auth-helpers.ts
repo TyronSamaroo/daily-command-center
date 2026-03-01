@@ -53,9 +53,10 @@ export async function getOwnerUserId(): Promise<string | null> {
     return DEMO_USER_ID;
   }
 
-  // Single-user app: get the first user in the DB (the owner)
-  const [owner] = await db.select().from(users).limit(1);
-  return owner?.id ?? null;
+  // Single-user app: prefer the real OAuth user over the demo user
+  const allUsers = await db.select().from(users).limit(5);
+  const realUser = allUsers.find((u) => u.id !== DEMO_USER_ID);
+  return realUser?.id ?? allUsers[0]?.id ?? null;
 }
 
 /**

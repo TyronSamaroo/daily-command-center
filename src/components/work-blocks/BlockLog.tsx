@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Clock, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { formatTime, formatDuration } from "@/lib/utils/dates";
@@ -8,10 +9,14 @@ import type { WorkBlock } from "@/types";
 interface BlockLogProps {
   blocks: WorkBlock[];
   onDelete: (id: number) => void;
+  onUpdateLabel: (id: number, label: string) => void;
   readOnly?: boolean;
 }
 
-export function BlockLog({ blocks, onDelete, readOnly }: BlockLogProps) {
+export function BlockLog({ blocks, onDelete, onUpdateLabel, readOnly }: BlockLogProps) {
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editLabel, setEditLabel] = useState("");
+
   const completedBlocks = blocks.filter((b) => b.endTime);
 
   if (completedBlocks.length === 0) {
@@ -22,6 +27,11 @@ export function BlockLog({ blocks, onDelete, readOnly }: BlockLogProps) {
         <p className="text-xs text-muted mt-1">Start a 45-minute focus sprint above</p>
       </Card>
     );
+  }
+
+  function handleSaveLabel(id: number) {
+    onUpdateLabel(id, editLabel);
+    setEditingId(null);
   }
 
   return (
@@ -38,8 +48,35 @@ export function BlockLog({ blocks, onDelete, readOnly }: BlockLogProps) {
                 {formatTime(block.startTime)}
                 {block.endTime && ` - ${formatTime(block.endTime)}`}
               </div>
-              {block.label && (
-                <div className="text-xs text-muted">{block.label}</div>
+              {!readOnly && editingId === block.id ? (
+                <input
+                  autoFocus
+                  type="text"
+                  value={editLabel}
+                  onChange={(e) => setEditLabel(e.target.value)}
+                  onBlur={() => handleSaveLabel(block.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSaveLabel(block.id);
+                    if (e.key === "Escape") setEditingId(null);
+                  }}
+                  placeholder="Add a label..."
+                  className="text-xs mt-0.5 bg-transparent border-b border-accent/30 text-foreground focus:outline-none focus:border-accent w-full max-w-[200px]"
+                />
+              ) : (
+                <div
+                  className={`text-xs mt-0.5 ${
+                    readOnly
+                      ? block.label ? "text-muted" : ""
+                      : "cursor-pointer hover:text-accent transition-colors"
+                  } ${block.label ? "text-muted" : "text-muted/40 italic"}`}
+                  onClick={() => {
+                    if (readOnly) return;
+                    setEditingId(block.id);
+                    setEditLabel(block.label || "");
+                  }}
+                >
+                  {block.label || (readOnly ? "" : "add label")}
+                </div>
               )}
             </div>
           </div>

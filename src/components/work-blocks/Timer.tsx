@@ -10,12 +10,14 @@ interface TimerProps {
     startTime: string;
     endTime: string;
     durationMin: number;
+    label?: string;
   }) => void;
   readOnly?: boolean;
 }
 
 export function Timer({ onBlockComplete, readOnly }: TimerProps) {
   const [activeBlockId, setActiveBlockId] = useState<number | null>(null);
+  const [label, setLabel] = useState("");
 
   const handleComplete = useCallback(() => {
     // Timer naturally finished
@@ -30,7 +32,7 @@ export function Timer({ onBlockComplete, readOnly }: TimerProps) {
       const res = await fetch("/api/work-blocks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startTime: new Date().toISOString() }),
+        body: JSON.stringify({ startTime: new Date().toISOString(), label: label || null }),
       });
       const block = await res.json();
       setActiveBlockId(block.id);
@@ -66,6 +68,7 @@ export function Timer({ onBlockComplete, readOnly }: TimerProps) {
       startTime: result.startedAt!,
       endTime,
       durationMin,
+      label: label || undefined,
     });
     setActiveBlockId(null);
   }
@@ -73,6 +76,7 @@ export function Timer({ onBlockComplete, readOnly }: TimerProps) {
   function handleReset() {
     timer.reset();
     setActiveBlockId(null);
+    setLabel("");
   }
 
   // Ring progress circle
@@ -110,7 +114,7 @@ export function Timer({ onBlockComplete, readOnly }: TimerProps) {
             {timer.formattedRemaining}
           </div>
           <div className="text-sm text-muted mt-1">
-            {timer.isRunning ? "focusing..." : timer.elapsed > 0 ? "paused" : "ready"}
+            {timer.isRunning ? (label || "focusing...") : timer.elapsed > 0 ? "paused" : "ready"}
           </div>
         </div>
       </div>
@@ -120,31 +124,44 @@ export function Timer({ onBlockComplete, readOnly }: TimerProps) {
         {readOnly ? (
           <div className="text-sm text-muted">Sign in to track work blocks</div>
         ) : (
-          <div className="flex items-center gap-3">
+          <>
+            {/* Label input - shown when idle */}
             {!timer.isRunning && timer.elapsed === 0 && (
-              <Button onClick={handleStart} size="lg" className="gap-2">
-                <Play className="w-5 h-5" />
-                Start Block
-              </Button>
+              <input
+                type="text"
+                placeholder="What are you working on? (optional)"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") handleStart(); }}
+                className="w-full max-w-xs px-3 py-2 rounded-lg bg-white/[0.03] border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent transition-colors text-center"
+              />
             )}
-            {timer.isRunning && (
-              <Button onClick={handleStop} variant="danger" size="lg" className="gap-2">
-                <Square className="w-4 h-4" />
-                Stop
-              </Button>
-            )}
-            {!timer.isRunning && timer.elapsed > 0 && (
-              <>
+            <div className="flex items-center gap-3">
+              {!timer.isRunning && timer.elapsed === 0 && (
                 <Button onClick={handleStart} size="lg" className="gap-2">
-                  <Zap className="w-5 h-5" />
-                  New Block
+                  <Play className="w-5 h-5" />
+                  Start Block
                 </Button>
-                <Button onClick={handleReset} variant="ghost" size="lg">
-                  <RotateCcw className="w-4 h-4" />
+              )}
+              {timer.isRunning && (
+                <Button onClick={handleStop} variant="danger" size="lg" className="gap-2">
+                  <Square className="w-4 h-4" />
+                  Stop
                 </Button>
-              </>
-            )}
-          </div>
+              )}
+              {!timer.isRunning && timer.elapsed > 0 && (
+                <>
+                  <Button onClick={handleStart} size="lg" className="gap-2">
+                    <Zap className="w-5 h-5" />
+                    New Block
+                  </Button>
+                  <Button onClick={handleReset} variant="ghost" size="lg">
+                    <RotateCcw className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

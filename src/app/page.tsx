@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import useSWR from "swr";
 import { useSession, signIn } from "next-auth/react";
 import { ModuleHeader } from "@/components/layout/ModuleHeader";
 import { Card, StatCard } from "@/components/ui/Card";
+import { UpcomingEvents } from "@/components/calendar/UpcomingEvents";
 import {
   Timer,
   Dumbbell,
@@ -14,6 +16,9 @@ import {
   ArrowRight,
   LogIn,
 } from "lucide-react";
+import type { CalendarEvent } from "@/types";
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const modules = [
   {
@@ -54,6 +59,13 @@ export default function DashboardPage() {
   const userName = session?.user?.name?.split(" ")[0] || "there";
   const isGuest = status !== "loading" && !session?.user;
 
+  const { data: calendarEvents = [] } = useSWR<CalendarEvent[]>(
+    session?.user ? "/api/calendar" : null,
+    fetcher
+  );
+
+  const nextEvent = calendarEvents[0];
+
   return (
     <div>
       <ModuleHeader
@@ -93,9 +105,10 @@ export default function DashboardPage() {
         />
         <StatCard
           label="Calendar"
-          value="—"
+          value={session?.user ? calendarEvents.length : "—"}
+          unit={session?.user ? "events" : ""}
           icon={<Calendar className="w-4 h-4" />}
-          subtext="Connect Google Calendar"
+          subtext={nextEvent ? `Next: ${nextEvent.summary}` : (session?.user ? "No events today" : "Sign in to connect")}
         />
         <StatCard
           label="Week Progress"
@@ -104,6 +117,14 @@ export default function DashboardPage() {
           subtext="Complete a week to see"
         />
       </div>
+
+      {/* Calendar Events (authenticated only) */}
+      {session?.user && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-muted uppercase tracking-wider mb-3">Calendar</h2>
+          <UpcomingEvents />
+        </div>
+      )}
 
       {/* Module Quick Links */}
       <h2 className="text-sm font-medium text-muted uppercase tracking-wider mb-3">Modules</h2>

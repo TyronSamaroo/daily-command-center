@@ -57,6 +57,18 @@ export default function WorkBlocksPage() {
     [mutateBlocks]
   );
 
+  const handleUpdateLabel = useCallback(
+    async (id: number, label: string) => {
+      await fetch(`/api/work-blocks/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label }),
+      });
+      mutateBlocks();
+    },
+    [mutateBlocks]
+  );
+
   return (
     <div>
       <ModuleHeader
@@ -99,7 +111,7 @@ export default function WorkBlocksPage() {
             currentStreak={currentStreak}
             longestStreak={longestStreak}
           />
-          <BlockLog blocks={blocks} onDelete={handleDelete} readOnly={isGuest} />
+          <BlockLog blocks={blocks} onDelete={handleDelete} onUpdateLabel={handleUpdateLabel} readOnly={isGuest} />
         </div>
       </div>
     </div>
