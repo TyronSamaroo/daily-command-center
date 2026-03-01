@@ -33,9 +33,14 @@ export async function getUserId(): Promise<string | null> {
   }
 
   // OAuth mode: check session
-  const { auth } = await import("@/lib/auth");
-  const session = await auth();
-  return session?.user?.id ?? null;
+  try {
+    const { auth } = await import("@/lib/auth");
+    const session = await auth();
+    return session?.user?.id ?? null;
+  } catch {
+    // Auth not initialized yet or no session — treat as guest
+    return null;
+  }
 }
 
 /**
