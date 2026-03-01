@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getUserId } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { workBlocks } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -8,8 +8,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const userId = await getUserId();
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -18,7 +18,7 @@ export async function DELETE(
 
   await db
     .delete(workBlocks)
-    .where(and(eq(workBlocks.id, blockId), eq(workBlocks.userId, session.user.id)));
+    .where(and(eq(workBlocks.id, blockId), eq(workBlocks.userId, userId)));
 
   return NextResponse.json({ success: true });
 }
