@@ -7,8 +7,16 @@ import { ModuleHeader } from "@/components/layout/ModuleHeader";
 import { Card } from "@/components/ui/Card";
 import { MonthNavigation } from "@/components/calendar/MonthNavigation";
 import { MonthGrid } from "@/components/calendar/MonthGrid";
+import { WeekView } from "@/components/calendar/WeekView";
 import { DayDetail } from "@/components/calendar/DayDetail";
-import { buildMonthGrid, groupEventsByDate, navigateMonth } from "@/lib/utils/calendar";
+import {
+  buildMonthGrid,
+  buildWeekGrid,
+  groupEventsByDate,
+  navigateMonth,
+  navigateWeek,
+} from "@/lib/utils/calendar";
+import type { CalendarViewMode } from "@/lib/utils/calendar";
 import { Calendar, LogIn } from "lucide-react";
 import type { CalendarEvent } from "@/types";
 
@@ -18,21 +26,27 @@ export default function CalendarPage() {
   const { data: session, status } = useSession();
   const now = new Date();
 
+  const [viewMode, setViewMode] = useState<CalendarViewMode>("month");
   const [currentYear, setCurrentYear] = useState(now.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(now.getMonth());
+  const [currentDay, setCurrentDay] = useState(now.getDate());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const isCurrentMonth =
-    currentYear === now.getFullYear() && currentMonth === now.getMonth();
-
-  const grid = useMemo(
+  const monthGrid = useMemo(
     () => buildMonthGrid(currentYear, currentMonth),
     [currentYear, currentMonth]
   );
 
+  const weekGrid = useMemo(
+    () => buildWeekGrid(currentYear, currentMonth, currentDay),
+    [currentYear, currentMonth, currentDay]
+  );
+
+  const activeGrid = viewMode === "month" ? monthGrid : weekGrid;
+
   const { data: events = [], isLoading } = useSWR<CalendarEvent[]>(
     session?.user
-      ? `/api/calendar?timeMin=${encodeURIComponent(grid.gridStart)}&timeMax=${encodeURIComponent(grid.gridEnd)}`
+      ? `/api/calendar?timeMin=${encodeURIComponent(activeGrid.gridStart)}&timeMax=${encodeURIComponent(activeGrid.gridEnd)}`
       : null,
     fetcher,
     { refreshInterval: 5 * 60 * 1000 }
@@ -42,16 +56,37 @@ export default function CalendarPage() {
 
   const isGuest = status !== "loading" && !session?.user;
 
+  const isCurrentPeriod =
+    viewMode === "month"
+      ? currentYear === now.getFullYear() && currentMonth === now.getMonth()
+      : weekGrid.days.some((d) => d.isToday);
+
+  const label = viewMode === "month" ? monthGrid.label : weekGrid.label;
+
   const handleNavigate = (delta: number) => {
-    const next = navigateMonth(currentYear, currentMonth, delta);
-    setCurrentYear(next.year);
-    setCurrentMonth(next.month);
+    if (viewMode === "month") {
+      const next = navigateMonth(currentYear, currentMonth, delta);
+      setCurrentYear(next.year);
+      setCurrentMonth(next.month);
+    } else {
+      const next = navigateWeek(currentYear, currentMonth, currentDay, delta);
+      setCurrentYear(next.year);
+      setCurrentMonth(next.month);
+      setCurrentDay(next.day);
+    }
     setSelectedDate(null);
   };
 
   const handleToday = () => {
-    setCurrentYear(now.getFullYear());
-    setCurrentMonth(now.getMonth());
+    const n = new Date();
+    setCurrentYear(n.getFullYear());
+    setCurrentMonth(n.getMonth());
+    setCurrentDay(n.getDate());
+    setSelectedDate(null);
+  };
+
+  const handleViewChange = (mode: CalendarViewMode) => {
+    setViewMode(mode);
     setSelectedDate(null);
   };
 
@@ -77,11 +112,13 @@ export default function CalendarPage() {
       ) : (
         <>
           <MonthNavigation
-            label={grid.label}
-            isCurrentMonth={isCurrentMonth}
+            label={label}
+            isCurrentPeriod={isCurrentPeriod}
+            viewMode={viewMode}
             onPrev={() => handleNavigate(-1)}
             onNext={() => handleNavigate(1)}
             onToday={handleToday}
+            onViewChange={handleViewChange}
           />
 
           {isLoading && events.length === 0 ? (
@@ -90,9 +127,16 @@ export default function CalendarPage() {
                 Loading events...
               </div>
             </Card>
-          ) : (
+          ) : viewMode === "month" ? (
             <MonthGrid
-              days={grid.days}
+              days={monthGrid.days}
+              eventsByDate={eventsByDate}
+              selectedDate={selectedDate}
+              onSelectDate={setSelectedDate}
+            />
+          ) : (
+            <WeekView
+              days={weekGrid.days}
               eventsByDate={eventsByDate}
               selectedDate={selectedDate}
               onSelectDate={setSelectedDate}

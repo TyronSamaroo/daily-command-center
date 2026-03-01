@@ -52,6 +52,17 @@ export function formatDateShort(dateKey: string): string {
   });
 }
 
+/** Format ISO timestamp to compact time: "9 AM" or "9:30 AM" */
+export function formatTimeShort(isoString: string): string {
+  if (!isoString.includes("T")) return "All day";
+  const d = new Date(isoString);
+  const h = d.getHours();
+  const m = d.getMinutes();
+  const period = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 || 12;
+  return m === 0 ? `${h12} ${period}` : `${h12}:${String(m).padStart(2, "0")} ${period}`;
+}
+
 /** Format YYYY-MM-DD as "Saturday, February 28, 2026" */
 export function formatDateLong(dateKey: string): string {
   const date = new Date(dateKey + "T12:00:00");
