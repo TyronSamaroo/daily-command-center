@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession, signIn } from "next-auth/react";
 import { ModuleHeader } from "@/components/layout/ModuleHeader";
 import { Card, StatCard } from "@/components/ui/Card";
 import {
@@ -11,6 +12,7 @@ import {
   Flame,
   Calendar,
   ArrowRight,
+  LogIn,
 } from "lucide-react";
 
 const modules = [
@@ -45,13 +47,17 @@ const modules = [
 ];
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession();
   const now = new Date();
   const greeting = getGreeting(now.getHours());
+
+  const userName = session?.user?.name?.split(" ")[0] || "there";
+  const isGuest = status !== "loading" && !session?.user;
 
   return (
     <div>
       <ModuleHeader
-        title={`${greeting}, Tyron`}
+        title={`${greeting}, ${userName}`}
         subtitle={now.toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
@@ -59,6 +65,17 @@ export default function DashboardPage() {
           year: "numeric",
         })}
       />
+
+      {/* Guest sign-in prompt */}
+      {isGuest && (
+        <button
+          onClick={() => signIn("google")}
+          className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-accent/30 bg-accent/5 text-accent text-sm hover:bg-accent/10 transition-colors"
+        >
+          <LogIn className="w-4 h-4" />
+          Sign in with Google to track your work
+        </button>
+      )}
 
       {/* Quick Stats Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">

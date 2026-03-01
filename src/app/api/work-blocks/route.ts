@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserId } from "@/lib/auth-helpers";
+import { getUserId, getOwnerUserId } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { workBlocks, workStreaks } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -7,9 +7,10 @@ import { formatDateKey } from "@/lib/utils/dates";
 import { calculateStreak } from "@/lib/utils/calculations";
 
 export async function GET(req: NextRequest) {
-  const userId = await getUserId();
+  // Allow guests to read owner's data (read-only)
+  const userId = (await getUserId()) || (await getOwnerUserId());
   if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json([], { status: 200 });
   }
 
   const date = req.nextUrl.searchParams.get("date");

@@ -11,9 +11,10 @@ interface TimerProps {
     endTime: string;
     durationMin: number;
   }) => void;
+  readOnly?: boolean;
 }
 
-export function Timer({ onBlockComplete }: TimerProps) {
+export function Timer({ onBlockComplete, readOnly }: TimerProps) {
   const [activeBlockId, setActiveBlockId] = useState<number | null>(null);
 
   const handleComplete = useCallback(() => {
@@ -115,29 +116,35 @@ export function Timer({ onBlockComplete }: TimerProps) {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-3">
-        {!timer.isRunning && timer.elapsed === 0 && (
-          <Button onClick={handleStart} size="lg" className="gap-2">
-            <Play className="w-5 h-5" />
-            Start Block
-          </Button>
-        )}
-        {timer.isRunning && (
-          <Button onClick={handleStop} variant="danger" size="lg" className="gap-2">
-            <Square className="w-4 h-4" />
-            Stop
-          </Button>
-        )}
-        {!timer.isRunning && timer.elapsed > 0 && (
-          <>
-            <Button onClick={handleStart} size="lg" className="gap-2">
-              <Zap className="w-5 h-5" />
-              New Block
-            </Button>
-            <Button onClick={handleReset} variant="ghost" size="lg">
-              <RotateCcw className="w-4 h-4" />
-            </Button>
-          </>
+      <div className="flex flex-col items-center gap-3">
+        {readOnly ? (
+          <div className="text-sm text-muted">Sign in to track work blocks</div>
+        ) : (
+          <div className="flex items-center gap-3">
+            {!timer.isRunning && timer.elapsed === 0 && (
+              <Button onClick={handleStart} size="lg" className="gap-2">
+                <Play className="w-5 h-5" />
+                Start Block
+              </Button>
+            )}
+            {timer.isRunning && (
+              <Button onClick={handleStop} variant="danger" size="lg" className="gap-2">
+                <Square className="w-4 h-4" />
+                Stop
+              </Button>
+            )}
+            {!timer.isRunning && timer.elapsed > 0 && (
+              <>
+                <Button onClick={handleStart} size="lg" className="gap-2">
+                  <Zap className="w-5 h-5" />
+                  New Block
+                </Button>
+                <Button onClick={handleReset} variant="ghost" size="lg">
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+          </div>
         )}
       </div>
     </div>

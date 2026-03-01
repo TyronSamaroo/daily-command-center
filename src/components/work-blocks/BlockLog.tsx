@@ -8,9 +8,10 @@ import type { WorkBlock } from "@/types";
 interface BlockLogProps {
   blocks: WorkBlock[];
   onDelete: (id: number) => void;
+  readOnly?: boolean;
 }
 
-export function BlockLog({ blocks, onDelete }: BlockLogProps) {
+export function BlockLog({ blocks, onDelete, readOnly }: BlockLogProps) {
   const completedBlocks = blocks.filter((b) => b.endTime);
 
   if (completedBlocks.length === 0) {
@@ -46,12 +47,14 @@ export function BlockLog({ blocks, onDelete }: BlockLogProps) {
             <span className="text-sm text-accent font-medium">
               {block.durationMin ? formatDuration(block.durationMin) : "—"}
             </span>
-            <button
-              onClick={() => onDelete(block.id)}
-              className="text-muted hover:text-danger transition-colors p-1"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
+            {!readOnly && (
+              <button
+                onClick={() => onDelete(block.id)}
+                className="text-muted hover:text-danger transition-colors p-1"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
       ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { ModuleHeader } from "@/components/layout/ModuleHeader";
 import { Timer } from "@/components/work-blocks/Timer";
@@ -14,6 +15,8 @@ import type { WorkBlock } from "@/types";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function WorkBlocksPage() {
+  const { data: session, status } = useSession();
+  const isGuest = status !== "loading" && !session?.user;
   const todayKey = formatDateKey(new Date());
 
   const { data: blocks = [], mutate: mutateBlocks } = useSWR<WorkBlock[]>(
@@ -65,7 +68,7 @@ export default function WorkBlocksPage() {
         {/* Main: Timer */}
         <div className="flex flex-col items-center">
           <div className="bg-surface border border-border rounded-xl p-8 w-full flex justify-center">
-            <Timer onBlockComplete={handleBlockComplete} />
+            <Timer onBlockComplete={handleBlockComplete} readOnly={isGuest} />
           </div>
 
           {/* Stats row */}
@@ -96,7 +99,7 @@ export default function WorkBlocksPage() {
             currentStreak={currentStreak}
             longestStreak={longestStreak}
           />
-          <BlockLog blocks={blocks} onDelete={handleDelete} />
+          <BlockLog blocks={blocks} onDelete={handleDelete} readOnly={isGuest} />
         </div>
       </div>
     </div>

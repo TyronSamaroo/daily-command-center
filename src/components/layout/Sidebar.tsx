@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Timer,
   Dumbbell,
   Home,
   BarChart3,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 
 const navItems = [
@@ -20,6 +23,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   return (
     <aside className="hidden md:flex md:flex-col md:w-56 md:fixed md:inset-y-0 bg-surface border-r border-border">
@@ -50,6 +54,35 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Auth section */}
+      <div className="px-3 py-4 border-t border-border">
+        {status === "loading" ? (
+          <div className="px-3 py-2 text-xs text-muted">Loading...</div>
+        ) : session?.user ? (
+          <div className="space-y-2">
+            <div className="px-3">
+              <div className="text-sm font-medium truncate">{session.user.name}</div>
+              <div className="text-xs text-muted truncate">{session.user.email}</div>
+            </div>
+            <button
+              onClick={() => signOut()}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-surface-hover transition-colors w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => signIn("google")}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-accent hover:bg-accent/10 transition-colors w-full"
+          >
+            <LogIn className="w-4 h-4" />
+            Sign in with Google
+          </button>
+        )}
+      </div>
     </aside>
   );
 }
