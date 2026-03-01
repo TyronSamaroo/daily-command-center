@@ -7,25 +7,30 @@ import { formatDateKey } from "@/lib/utils/dates";
 import { calculateStreak } from "@/lib/utils/calculations";
 
 export async function GET(req: NextRequest) {
-  // Allow guests to read owner's data (read-only)
-  const userId = (await getUserId()) || (await getOwnerUserId());
-  if (!userId) {
-    return NextResponse.json([], { status: 200 });
+  try {
+    // Allow guests to read owner's data (read-only)
+    const userId = (await getUserId()) || (await getOwnerUserId());
+    if (!userId) {
+      return NextResponse.json([], { status: 200 });
+    }
+
+    const date = req.nextUrl.searchParams.get("date");
+
+    const conditions = date
+      ? and(eq(workBlocks.userId, userId), eq(workBlocks.date, date))
+      : eq(workBlocks.userId, userId);
+
+    const blocks = await db
+      .select()
+      .from(workBlocks)
+      .where(conditions)
+      .orderBy(desc(workBlocks.startTime));
+
+    return NextResponse.json(blocks);
+  } catch (err) {
+    console.error("GET /api/work-blocks error:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  const date = req.nextUrl.searchParams.get("date");
-
-  const conditions = date
-    ? and(eq(workBlocks.userId, userId), eq(workBlocks.date, date))
-    : eq(workBlocks.userId, userId);
-
-  const blocks = await db
-    .select()
-    .from(workBlocks)
-    .where(conditions)
-    .orderBy(desc(workBlocks.startTime));
-
-  return NextResponse.json(blocks);
 }
 
 export async function POST(req: NextRequest) {
