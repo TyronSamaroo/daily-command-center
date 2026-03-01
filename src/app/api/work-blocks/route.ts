@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserId, getOwnerUserId } from "@/lib/auth-helpers";
+import { getUserId } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { workBlocks, workStreaks } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -8,8 +8,7 @@ import { calculateStreak } from "@/lib/utils/calculations";
 
 export async function GET(req: NextRequest) {
   try {
-    // Allow guests to read owner's data (read-only)
-    const userId = (await getUserId()) || (await getOwnerUserId());
+    const userId = await getUserId();
     if (!userId) {
       return NextResponse.json([], { status: 200 });
     }

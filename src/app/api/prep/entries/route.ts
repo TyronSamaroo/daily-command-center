@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserId, getOwnerUserId } from "@/lib/auth-helpers";
+import { getUserId } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { prepEntries } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   try {
-    const userId = (await getUserId()) || (await getOwnerUserId());
+    const userId = await getUserId();
     if (!userId) {
       return NextResponse.json([], { status: 200 });
     }

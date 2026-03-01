@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import useSWR from "swr";
 import {
   LineChart,
@@ -28,6 +28,7 @@ import {
   TrendingDown,
   Plus,
   Trash2,
+  LogIn,
 } from "lucide-react";
 import type { PrepEntry, PrepConfig } from "@/types";
 
@@ -54,18 +55,19 @@ function todayStr(): string {
 }
 
 export default function ContestPrepPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isGuest = status !== "loading" && !session?.user;
   const [configOpen, setConfigOpen] = useState(false);
   const [entryModalOpen, setEntryModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PrepEntry | null>(null);
 
   const { data: entries = [], mutate: mutateEntries } = useSWR<PrepEntry[]>(
-    "/api/prep/entries",
+    session?.user ? "/api/prep/entries" : null,
     fetcher
   );
 
   const { data: config, mutate: mutateConfig } = useSWR<PrepConfig | null>(
-    "/api/prep/config",
+    session?.user ? "/api/prep/config" : null,
     fetcher
   );
 
@@ -159,7 +161,22 @@ export default function ContestPrepPage() {
         }
       />
 
-      {entries.length === 0 ? (
+      {isGuest ? (
+        <Card className="text-center py-12">
+          <Dumbbell className="w-10 h-10 text-muted mx-auto mb-3" />
+          <h2 className="text-lg font-medium mb-1">Sign In to View Prep Data</h2>
+          <p className="text-sm text-muted mb-4">
+            Connect your Google account to track your contest prep.
+          </p>
+          <button
+            onClick={() => signIn("google")}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-background text-sm font-medium hover:bg-accent-hover transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            Sign in with Google
+          </button>
+        </Card>
+      ) : entries.length === 0 ? (
         <Card className="text-center py-12">
           <Dumbbell className="w-10 h-10 text-muted mx-auto mb-3" />
           <h2 className="text-lg font-medium mb-1">No Data Yet</h2>
