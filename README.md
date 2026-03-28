@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daily Command Center
+
+A unified personal productivity dashboard that consolidates work tracking, contest prep, household coordination, and weekly retrospectives into a single app.
+
+![Daily Command Center Demo](docs/demo.gif)
+
+## Features
+
+- **Morning Dashboard** — Greeting, streak counter, daily stats at a glance
+- **Work Blocks** — 45-minute focus sprint timer with session tracking
+- **Contest Prep** — Track weight, macros, and competition phases
+- **Household** — Schedules, chores, and coordination
+- **Weekly Retro** — Review your week's progress
+- **Calendar** — Month and week views with Google Calendar integration
+
+## Tech Stack
+
+- **Framework:** Next.js 16 + TypeScript
+- **Styling:** Tailwind CSS v4
+- **Database:** Turso (libSQL) + Drizzle ORM
+- **Auth:** NextAuth v5 (Google OAuth)
+- **Charts:** Recharts
+- **Icons:** Lucide React
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repo and install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/TyronSamaroo/daily-command-center.git
+cd daily-command-center
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up environment variables in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+TURSO_DATABASE_URL=your_turso_url
+TURSO_AUTH_TOKEN=your_turso_token
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_SECRET=your_nextauth_secret
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Push the database schema and start the dev server:
 
-## Learn More
+```bash
+npx drizzle-kit push
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
