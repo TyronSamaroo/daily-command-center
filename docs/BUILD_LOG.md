@@ -12,6 +12,20 @@ A unified productivity dashboard replacing 6+ disconnected tools (Google Keep, s
 
 ---
 
+## Phase Roadmap
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 1 | Foundation + Work Block Tracker | Complete |
+| 2 | Contest Prep Snapshot (port from `ocb-debut-dashboard`) | Not started |
+| 3 | Household Coordination (port from `smart-chore-scheduler`) | Not started |
+| 4 | Google Calendar integration + Morning Dashboard | Not started |
+| 5 | Weekly Retro + Polish | Not started |
+
+Plan reference: `~/.claude/plans/shimmying-hugging-cosmos.md`
+
+---
+
 ## Phase 1: Foundation + Work Block Tracker
 
 ### Commit History
