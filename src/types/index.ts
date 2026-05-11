@@ -131,3 +131,12 @@ export interface NavItem {
   href: string;
   icon: string;
 }
+
+// === Time ranges ===
+/** Time window used by metrics, retros, and dashboard filters. */
+export type Period = "day" | "week" | "month" | "quarter" | "year";
+
+export interface DateRange {
+  start: string; // YYYY-MM-DD inclusive
+  end: string;   // YYYY-MM-DD inclusive
+}
