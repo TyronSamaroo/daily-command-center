@@ -50,3 +50,15 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+## Status
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 1 | Foundation + Work Block Tracker | Done |
+| 2 | Contest Prep Snapshot | Not started |
+| 3 | Household Coordination | Not started |
+| 4 | Google Calendar + Morning Dashboard | Not started |
+| 5 | Weekly Retro + Polish | Not started |
+
+See [docs/BUILD_LOG.md](docs/BUILD_LOG.md) for full implementation history and [docs/SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) for architecture.
