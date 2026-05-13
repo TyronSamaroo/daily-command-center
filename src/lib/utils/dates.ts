@@ -73,3 +73,25 @@ export function formatDateLong(dateKey: string): string {
     year: "numeric",
   });
 }
+
+/** True when the YYYY-MM-DD key matches today (local time). */
+export function isToday(dateKey: string): boolean {
+  return dateKey === today();
+}
+
+/** True when the YYYY-MM-DD key is exactly one day before today. */
+export function isYesterday(dateKey: string): boolean {
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  return dateKey === formatDateKey(y);
+}
+
+/**
+ * Render a date key with the friendly relative label where it helps:
+ * "Today", "Yesterday", "Mon, Feb 28".
+ */
+export function formatDateFriendly(dateKey: string): string {
+  if (isToday(dateKey)) return "Today";
+  if (isYesterday(dateKey)) return "Yesterday";
+  return formatDateShort(dateKey);
+}
