@@ -62,3 +62,13 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 | 5 | Weekly Retro + Polish | Not started |
 
 See [docs/BUILD_LOG.md](docs/BUILD_LOG.md) for full implementation history and [docs/SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) for architecture.
+
+### Shared utilities
+
+A small set of reusable hooks and helpers backs the modules above:
+
+- `src/hooks/` — `useDebounce`, `useLocalStorage`, `useMediaQuery`, `usePrevious`, `useTimer`, `useToggle`
+- `src/lib/utils/` — `dates`, `calculations`, `format`, `group`, `relative-time`, `calendar`
+- `src/components/ui/` — `Button`, `Card`, `Modal`, `Badge`
+
+Each is intentionally framework-thin so the next phase can pull them in without leaning on a wider component library.
