@@ -50,3 +50,13 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+### Shared utilities
+
+A small set of reusable hooks and helpers backs the modules above:
+
+- `src/hooks/` — `useDebounce`, `useLocalStorage`, `useMediaQuery`, `usePrevious`, `useTimer`, `useToggle`
+- `src/lib/utils/` — `dates`, `calculations`, `format`, `group`, `relative-time`, `calendar`
+- `src/components/ui/` — `Button`, `Card`, `Modal`, `Badge`
+
+Each is intentionally framework-thin so the next phase can pull them in without leaning on a wider component library.

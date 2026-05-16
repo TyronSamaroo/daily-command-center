@@ -46,3 +46,27 @@ export function pct(consumed: number, target: number): number {
 export function remaining(target: number, consumed: number): number {
   return Math.max(0, target - consumed);
 }
+
+/**
+ * Percent change between two values, e.g. ((current - previous) / previous) * 100.
+ * Returns null when previous is 0 or nullish, since the answer is undefined.
+ */
+export function percentChange(
+  current: number,
+  previous: number | null | undefined
+): number | null {
+  if (previous == null || previous === 0) return null;
+  return ((current - previous) / previous) * 100;
+}
+
+/** Sum a numeric array, treating null/undefined as zero. */
+export function sum(values: (number | null | undefined)[]): number {
+  return values.reduce<number>((total, v) => total + (v ?? 0), 0);
+}
+
+/** Average of a numeric array, ignoring null/undefined. Returns null when empty. */
+export function average(values: (number | null | undefined)[]): number | null {
+  const present = values.filter((v): v is number => v != null);
+  if (present.length === 0) return null;
+  return present.reduce((a, b) => a + b, 0) / present.length;
+}
