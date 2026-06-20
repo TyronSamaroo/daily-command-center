@@ -1,0 +1,92 @@
+{
+  "generated_at": "2026-06-19 22:50:00 EDT",
+  "source": "GitHub remote refs fetched into local origin/* refs; local-only branches excluded",
+  "window": {
+    "start": "2026-06-15 00:00 EDT",
+    "end": "2026-06-22 00:00 EDT"
+  },
+  "includes_pending_report_publish_commit": true,
+  "remote_all_refs": {
+    "week_total_nonmerge": 161,
+    "week_total_all": 177,
+    "weekend_since_friday_1800_nonmerge": 1,
+    "weekend_since_friday_1800_all": 4,
+    "daily_nonmerge": {
+      "2026-06-15": 19,
+      "2026-06-16": 3,
+      "2026-06-17": 126,
+      "2026-06-18": 8,
+      "2026-06-19": 5,
+      "2026-06-20": 0,
+      "2026-06-21": 0
+    },
+    "daily_all": {
+      "2026-06-15": 20,
+      "2026-06-16": 7,
+      "2026-06-17": 133,
+      "2026-06-18": 9,
+      "2026-06-19": 8,
+      "2026-06-20": 0,
+      "2026-06-21": 0
+    }
+  },
+  "contribution_likely_refs": {
+    "definition": "origin/HEAD default branch plus origin/gh-pages when present",
+    "week_total_nonmerge": 156,
+    "week_total_all": 170,
+    "weekend_since_friday_1800_nonmerge": 1,
+    "weekend_since_friday_1800_all": 2,
+    "daily_nonmerge": {
+      "2026-06-15": 19,
+      "2026-06-16": 3,
+      "2026-06-17": 126,
+      "2026-06-18": 7,
+      "2026-06-19": 1,
+      "2026-06-20": 0,
+      "2026-06-21": 0
+    },
+    "daily_all": {
+      "2026-06-15": 20,
+      "2026-06-16": 7,
+      "2026-06-17": 133,
+      "2026-06-18": 8,
+      "2026-06-19": 2,
+      "2026-06-20": 0,
+      "2026-06-21": 0
+    }
+  },
+  "top_remote_repos": [
+    {
+      "repo": "ocb-prep-ios",
+      "remote": "https://github.com/TyronSamaroo/ocb-prep-ios",
+      "count": 144
+    },
+    {
+      "repo": "step-receipt-ios",
+      "remote": "https://github.com/TyronSamaroo/step-receipt-ios",
+      "count": 16
+    },
+    {
+      "repo": "daily-command-center",
+      "remote": "https://github.com/TyronSamaroo/daily-command-center",
+      "count": 1
+    }
+  ],
+  "top_contribution_likely_repos": [
+    {
+      "repo": "ocb-prep-ios",
+      "remote": "https://github.com/TyronSamaroo/ocb-prep-ios",
+      "count": 139
+    },
+    {
+      "repo": "step-receipt-ios",
+      "remote": "https://github.com/TyronSamaroo/step-receipt-ios",
+      "count": 16
+    },
+    {
+      "repo": "daily-command-center",
+      "remote": "https://github.com/TyronSamaroo/daily-command-center",
+      "count": 1
+    }
+  ]
+}
