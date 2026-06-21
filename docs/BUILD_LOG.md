@@ -12,6 +12,20 @@ A unified productivity dashboard replacing 6+ disconnected tools (Google Keep, s
 
 ---
 
+## Phase Roadmap
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 1 | Foundation + Work Block Tracker | Complete |
+| 2 | Contest Prep Snapshot (port from `ocb-debut-dashboard`) | Not started |
+| 3 | Household Coordination (port from `smart-chore-scheduler`) | Not started |
+| 4 | Google Calendar integration + Morning Dashboard | Not started |
+| 5 | Weekly Retro + Polish | Not started |
+
+Plan reference: `~/.claude/plans/shimmying-hugging-cosmos.md`
+
+---
+
 ## Phase 1: Foundation + Work Block Tracker
 
 ### Commit History
@@ -365,3 +379,17 @@ src/
   types/
     work-blocks.ts          # TypeScript types for work block data
 ```
+
+---
+
+## Weekly Highlights
+
+### Week of March 23, 2026
+
+- Added project planning and architecture docs in [PR #7](https://github.com/TyronSamaroo/daily-command-center/pull/7), including the build log, PRD, and system design documents.
+- Refreshed the repository overview in [`README.md`](https://github.com/TyronSamaroo/daily-command-center/blob/main/README.md) and added the demo GIF used in the project docs.
+
+### Key Links
+
+- [PR #7: chore/add-docs](https://github.com/TyronSamaroo/daily-command-center/pull/7)
+- [Commit `98e4b74`: add demo GIF and rewrite README with project overview](https://github.com/TyronSamaroo/daily-command-center/commit/98e4b74868f3416d3cb8f7fc56ef741618329792)
