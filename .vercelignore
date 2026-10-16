@@ -1,0 +1,13 @@
+.env*
+.claude/
+.codex/
+local.db
+*.db
+*.sqlite
+*.sqlite3
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.DS_Store
