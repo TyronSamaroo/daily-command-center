@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local sqlite (drizzle dev db)
+local.db
+local.db-journal
+
+# claude code session state
+.claude/
